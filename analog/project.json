@@ -1,66 +1,75 @@
 {
  "spec": "Project: Apogee POR Staging Verify\n## **Project Description: Apogee POR Staging Verify**\n\n### **Overview**\n**Apogee POR Staging Verify** is a specialized Analog IC design initiative focused on the **sky130 5V process node**. The primary objective is to execute a complete design, simulation, layout, and verification cycle for a **Power-On Reset (POR)** circuit, encapsulated in a top-level wrapper. This project serves as a critical staging verification for broader AI-led chip design initiatives, aiming to demonstrate that an entirely AI-driven workforce can manage complex hardware dependencies with high precision.\n\n### **Context & Vision**\nThe long-term vision of the Apogee platform is to establish a repeatable, automated pipeline for analog cell creation on open-source PDKs like sky130. By restricting the scope to a single robust POR block and its top-level integration, the project isolates specific technical challenges (schematic generation, PVT simulation, DRC/LVS sign-off) to validate the capabilities of AI agents in a controlled environment. Success in this project will provide the blueprint for scaling AI autonomy into larger, multi-block subsystems and full-chip designs.\n\n### **Scope & Technical Workflow**\nThe scope is tightly controlled to ensure feasibility and quality metrics. The workflow follows a rigorous sequential dependency chain:\n1.  **Schematic & Netlist**: Generation of a SPICE-ready netlist for a 5V-tolerant POR cell.\n2.  **Simulation**: Execution of transient simulations across three critical voltage corners (**1.4 V**, **3.3 V**, and **5.5 V**) to generate comprehensive PVT (Process, Voltage, Temperature) tables.\n3.  **Layout & Verification**: Physical implementation using **Magic Layout Editor**, achieving sign-off via zero-error **DRC** (Design Rule Check) and **LVS** (Layout vs. Schematic).\n4.  **Integration**: Incorporation of the verified POR block into a minimal top-level module.\n5.  **Characterization & Modeling**: Development of a **Python characterization script** for automated data extraction and a **Verilog-A behavioural model** for system-level simulation.\n\n### **Staffing Model**\nA defining characteristic of this project is the **exclusively AI Employee staffing model**. There are no human hardware resource dependencies. This requires high-degree autonomy, structured inter-agent communication, and strict adherence to protocol to ensure that every story (task) includes attached results (plots, tables, layouts).\nInstructions: <p>Staff only AI Employees (no humans). Keep scope small: one POR block plus top level. Each story must attach its results (plots, PVT tables, layout).</p>\n\nEpic: POR Schematic & Netlist Development\nDesign the core Power-On Reset (POR) circuit topology for the sky130 5V process to establish the foundational electrical definition of the block. This includes defining resistor divider ratios, capacitor values, and transistor sizing to ensure reliable reset behavior across the 1.4V to 5.5V supply range. The output must be a verified, syntactically correct SPICE netlist compatible with ngspice, along with theoretical analysis documentation that serves as the baseline for subsequent simulation and layout activities. This is a critical path item for the entire project.\nExpectations: A complete, error-free SPICE netlist (.sp) and schematic diagram (.pdf) for a 5V-tolerant POR cell on sky130, accompanied by a theoretical analysis report documenting expected reset voltages and timings for the corners 1.4V, 3.3V, and 5.5V.\n\nStory: SPICE Netlist Generation & Syntax Verification\nTranslate the finalized POR schematic into a SPICE netlist format compatible with ngspice. This story focuses on the rigorous conversion from graphical schematic to text-based algebraic representation. The output must be a '.sp' file that loads without syntax errors in the ngspice engine. This is a critical quality gate; any syntax error here will block downstream simulations. The netlist must accurately reflect the component values and connectivity defined in the previous story.",
  "plan": {
-  "title": "SPICE Netlist Generation & Syntax Verification for POR Block",
-  "summary": "Generate and verify the SPICE netlist for the POR block, including syntax check and PVT simulation. No layout or documentation in this phase. Reuse the existing POR cell.",
+  "title": "POR Netlist Syntax and Simulation Verification",
+  "summary": "Re-check the existing POR and por_top cells for simulation, PVT, and SEU (if applicable). Do not modify netlists or plan layout. No documents unless explicitly requested. Only simulation, PVT, and SEU checks are in scope for this task.",
   "deliverables": [],
   "phases": [
    {
-    "id": "task-1f1616a9-d703-4404-82c3-73a7a07a041e",
-    "name": "Generate SPICE Netlist (.sp)",
-    "goal": "design the circuit: write or import the cell netlist(s), simulate them at every supply, and run the PVT check (and the SEU check for storage cells). Do NOT plan any layout.",
+    "id": "task-c09ce4d7-21a5-4eda-a50b-e76cd081fcaa",
+    "name": "Verify Netlist with ngspice",
+    "goal": "re-check the existing cell(s): simulation, PVT and SEU checks only. Do NOT change netlists unless they are missing, and do NOT plan any layout.",
     "steps": [
      {
-      "id": "s1_import_reference_cell_por",
+      "id": "s1_import_reference_cell_POR",
       "action": "import_reference_cell",
-      "target": "por",
-      "description": "Import the verified POR cell from reference library.",
+      "target": "POR",
+      "description": "Import the verified POR reference cell from por.sp.",
       "args": {
        "file": "por.sp"
       }
      },
      {
-      "id": "s2_simulate_cell_por",
+      "id": "s2_import_reference_cell_por",
+      "action": "import_reference_cell",
+      "target": "por",
+      "description": "Import the verified POR reference cell as por from por.sp.",
+      "args": {
+       "file": "por.sp"
+      }
+     },
+     {
+      "id": "s3_import_reference_cell_por_top",
+      "action": "import_reference_cell",
+      "target": "por_top",
+      "description": "Import the por_top cell from por.sp if available.",
+      "args": {
+       "file": "por.sp"
+      }
+     },
+     {
+      "id": "s4_simulate_cell_por",
       "action": "simulate_cell",
       "target": "por",
-      "description": "Run functional simulation of POR at 1.4V, 3.3V, and 5.5V.",
+      "description": "Re-run functional simulation for POR cell.",
       "args": {}
      },
      {
-      "id": "s3_pvt_check_por",
+      "id": "s5_pvt_check_por",
       "action": "pvt_check",
       "target": "por",
-      "description": "Run PVT check for POR cell at all corners and temperatures.",
+      "description": "Re-run PVT check for POR cell.",
       "args": {}
      },
      {
-      "id": "s4_write_cell_netlist_por_top",
-      "action": "write_cell_netlist",
-      "target": "por_top",
-      "description": "Write a minimal SPICE netlist for a top-level wrapper that instantiates the POR block.",
-      "args": {}
-     },
-     {
-      "id": "s5_simulate_cell_por_top",
+      "id": "s6_simulate_cell_por_top",
       "action": "simulate_cell",
       "target": "por_top",
-      "description": "Run functional simulation of the POR top-level wrapper cell.",
+      "description": "Re-run functional simulation for por_top cell.",
       "args": {}
      },
      {
+      "id": "s7_pvt_check_por_top",
       "action": "pvt_check",
       "target": "por_top",
-      "description": "por_top at every corner and temperature",
-      "id": "s6_pvt_check_por_top",
+      "description": "Re-run PVT check for por_top cell.",
       "args": {}
      }
     ],
     "deliverables": []
    }
   ],
-  "notes": [
-   "Checks added by the system: pvt_check por_top"
-  ]
+  "notes": []
  },
  "plan_approved": true,
  "phase": 1,
@@ -1540,6 +1549,10 @@
   {
    "time": "16:33:07",
    "event": "phase task-1f1616a9-d703-4404-82c3-73a7a07a041e done, waiting for review"
+  },
+  {
+   "time": "16:33:46",
+   "event": "phase task-c09ce4d7-21a5-4eda-a50b-e76cd081fcaa done, waiting for review"
   }
  ],
  "plan_status": "approved"
