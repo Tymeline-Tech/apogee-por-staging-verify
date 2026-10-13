@@ -2,19 +2,19 @@
  "spec": "Project: Apogee POR Staging Verify\n## **Project Description: Apogee POR Staging Verify**\n\n### **Overview**\n**Apogee POR Staging Verify** is a specialized Analog IC design initiative focused on the **sky130 5V process node**. The primary objective is to execute a complete design, simulation, layout, and verification cycle for a **Power-On Reset (POR)** circuit, encapsulated in a top-level wrapper. This project serves as a critical staging verification for broader AI-led chip design initiatives, aiming to demonstrate that an entirely AI-driven workforce can manage complex hardware dependencies with high precision.\n\n### **Context & Vision**\nThe long-term vision of the Apogee platform is to establish a repeatable, automated pipeline for analog cell creation on open-source PDKs like sky130. By restricting the scope to a single robust POR block and its top-level integration, the project isolates specific technical challenges (schematic generation, PVT simulation, DRC/LVS sign-off) to validate the capabilities of AI agents in a controlled environment. Success in this project will provide the blueprint for scaling AI autonomy into larger, multi-block subsystems and full-chip designs.\n\n### **Scope & Technical Workflow**\nThe scope is tightly controlled to ensure feasibility and quality metrics. The workflow follows a rigorous sequential dependency chain:\n1.  **Schematic & Netlist**: Generation of a SPICE-ready netlist for a 5V-tolerant POR cell.\n2.  **Simulation**: Execution of transient simulations across three critical voltage corners (**1.4 V**, **3.3 V**, and **5.5 V**) to generate comprehensive PVT (Process, Voltage, Temperature) tables.\n3.  **Layout & Verification**: Physical implementation using **Magic Layout Editor**, achieving sign-off via zero-error **DRC** (Design Rule Check) and **LVS** (Layout vs. Schematic).\n4.  **Integration**: Incorporation of the verified POR block into a minimal top-level module.\n5.  **Characterization & Modeling**: Development of a **Python characterization script** for automated data extraction and a **Verilog-A behavioural model** for system-level simulation.\n\n### **Staffing Model**\nA defining characteristic of this project is the **exclusively AI Employee staffing model**. There are no human hardware resource dependencies. This requires high-degree autonomy, structured inter-agent communication, and strict adherence to protocol to ensure that every story (task) includes attached results (plots, tables, layouts).\nInstructions: <p>Staff only AI Employees (no humans). Keep scope small: one POR block plus top level. Each story must attach its results (plots, PVT tables, layout).</p>\n\nEpic: POR Schematic & Netlist Development\nDesign the core Power-On Reset (POR) circuit topology for the sky130 5V process to establish the foundational electrical definition of the block. This includes defining resistor divider ratios, capacitor values, and transistor sizing to ensure reliable reset behavior across the 1.4V to 5.5V supply range. The output must be a verified, syntactically correct SPICE netlist compatible with ngspice, along with theoretical analysis documentation that serves as the baseline for subsequent simulation and layout activities. This is a critical path item for the entire project.\nExpectations: A complete, error-free SPICE netlist (.sp) and schematic diagram (.pdf) for a 5V-tolerant POR cell on sky130, accompanied by a theoretical analysis report documenting expected reset voltages and timings for the corners 1.4V, 3.3V, and 5.5V.\n\nStory: POR Circuit Topology Definition & Schematic Design\nDefine the electrical architecture of the Power-On Reset (POR) block for the sky130 5V process. This involves selecting a robust RC-based topology (resistor divider, timing capacitor, and level-shifting/output stage) that guarantees reliable reset assertion and de-assertion across the full 1.4V-5.5V supply range. The goal is to produce a finalized conceptual schematic in Xschem format that explicitly defines all component values (resistors, capacitor, transistors) and pin connectivity. This design serves as the authoritative baseline for subsequent netlist generation and theoretical analysis. The work is constrained to sky130 5V devices and must account for the specific threshold voltage variations of the process.",
  "plan": {
   "title": "POR Circuit Topology Definition & Schematic Design",
-  "summary": "Define, netlist, and verify the POR cell topology for sky130 5V process. Produce a complete, error-free SPICE netlist and verify its function across 1.4V, 3.3V, and 5.5V supplies. No layout or documentation in this phase.",
+  "summary": "Define and verify the POR circuit topology for sky130 5V process. Import or write the POR cell netlist, simulate at all supply voltages, and run PVT check. No layout or documentation in this phase. Reuse existing POR cell if available.",
   "deliverables": [],
   "phases": [
    {
-    "id": "task-93b10255-2ebc-49eb-b986-176d96761936",
-    "name": "Define POR Component Values & Topology",
+    "id": "task-7f950298-2e58-4152-8a56-71d9e4dbf281",
+    "name": "Create Xschem Schematic & Export PDF",
     "goal": "design the circuit: write or import the cell netlist(s), simulate them at every supply, and run the PVT check (and the SEU check for storage cells). Do NOT plan any layout.",
     "steps": [
      {
       "id": "s1_import_reference_cell_POR",
       "action": "import_reference_cell",
       "target": "POR",
-      "description": "Import the verified POR reference cell if it matches requirements.",
+      "description": "Import the verified POR reference cell if available.",
       "args": {
        "file": "por.sp"
       }
@@ -535,6 +535,10 @@
   {
    "time": "15:54:09",
    "event": "phase task-93b10255-2ebc-49eb-b986-176d96761936 done, waiting for review"
+  },
+  {
+   "time": "15:54:36",
+   "event": "phase task-7f950298-2e58-4152-8a56-71d9e4dbf281 done, waiting for review"
   }
  ],
  "plan_status": "approved"
