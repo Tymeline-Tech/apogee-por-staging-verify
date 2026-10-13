@@ -1,0 +1,2 @@
+{"time": "2026-10-13T15:45:49", "tool": "import_reference_cell", "args": {"file": "por.sp", "name": "POR", "prefix": null}, "ok": true, "result": {"imported": ["POR"], "top": "POR", "simulated": {"POR": true}}}
+{"time": "2026-10-13T15:54:09", "tool": "pvt_check_cell", "args": {"cell": "POR"}, "ok": true, "result": {"passed": true, "failed_points": [], "points": 9, "skipped_points": [], "detail": []}}
